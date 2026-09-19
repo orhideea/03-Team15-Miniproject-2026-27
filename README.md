@@ -34,8 +34,8 @@
 | XIAO ESP32-S3| Main Controller of the  system |
 | Multi-color LED | depending on the color, it shows a preset, ready status, an active status and a finished status |
 | Buttons | Two buttons that change the preset and start the timer  |
-| L293D driver | The bridge that helps the stepper motor receive the data from the esp32 |
-| 28BYJ-48 Stepper | The display of amount of time left on the timer |
+| L293D driver | A power driver able to translate the esp32 GPIO signals into a current for the coils of stepper motor|
+| 28BYJ-48 Stepper | Drives the pointer to show the amount of allotted time left |
 ---
 
 ## Team Responsibilities 
