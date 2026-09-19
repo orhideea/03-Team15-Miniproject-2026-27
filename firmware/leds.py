@@ -1,19 +1,3 @@
-# leds.py -- tri-color LED output for the Team 15 meeting timer.
-#
-# Owner: Deniz
-#
-# Drives three LEDs (red / blue / green) on separate GPIO pins, each through a
-# 220 ohm current-limiting resistor, using hardware PWM. The PWM duty cycle is
-# swept up and down once per second to produce a "breathing" pulse effect, as
-# required by the assignment.
-#
-# Public interface (agreed with the team -- do not change without telling everyone):
-#   init()            -- set up the PWM channels. Call once at startup.
-#   set_state(name)   -- choose which color/pattern is showing.
-#   update()          -- must be called repeatedly from the main loop so the
-#                        pulse animation advances. Non-blocking.
-#   off()             -- turn everything off (used on shutdown / reset).
-
 from machine import Pin, PWM
 import time
 
