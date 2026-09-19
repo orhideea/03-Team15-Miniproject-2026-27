@@ -26,6 +26,10 @@ import time
 
 import config
 
+# Hardware notes (verified with Brian): both switches are wired between the
+# GPIO pin and GND and use the internal pull-ups (Pin.PULL_UP). DEBOUNCE_MS = 50
+# was tested on the physical switches with no double-triggering.
+
 _buttons = []
 
 
