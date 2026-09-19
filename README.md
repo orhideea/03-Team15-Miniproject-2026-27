@@ -56,9 +56,9 @@ enclosure and CAD deliverables do not apply to this build.
 | GPIO4 | L293D pin 15 (4A) | Motor coil 4 (blue) |
 | GPIO5 | Tactile switch 1 | SELECT button |
 | GPIO6 | Tactile switch 2 | START / PAUSE / RESET button |
-| GPIO7 | Red LED (via 220R) | Status output |
-| GPIO8 | Blue LED (via 220R) | Status output |
-| GPIO9 | Green LED (via 220R) | Status output |
+| GPIO7 | Green LED (via 220R) | Status output |
+| GPIO8 | Red LED (via 220R) | Status output |
+| GPIO9 | Blue LED (via 220R) | Status output |
 | 5V | L293D pins 8 and 16, motor red wire | Motor and logic supply |
 | 3V3 | L293D pins 1 and 9 | Channel enables |
 | GND | L293D pins 4, 5, 12, 13; LED cathodes; switches | Common ground |
