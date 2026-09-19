@@ -1,26 +1,3 @@
-# buttons.py -- tactile switch input for the Team 15 meeting timer.
-#
-# Owner: Micky (Richard)
-#
-# Reads the two tactile switches and turns raw pin transitions into clean,
-# debounced events for the state machine in main.py.
-#
-# Wiring assumption: each switch connects its GPIO pin to GND, and the pin uses
-# the ESP32's internal pull-up. So the pin reads 1 when released and 0 when
-# pressed (active low). No external resistors are needed. Confirm this with
-# Brian before testing -- if the switches were wired to 3V3 instead, the logic
-# below has to be inverted.
-#
-# Public interface (agreed with the team -- do not change without telling everyone):
-#   init()   -- configure the pins. Call once at startup.
-#   poll()   -- call repeatedly from the main loop. Returns None most of the
-#               time, or one of: "select", "start", "reset".
-#
-# Event mapping:
-#   BTN_SELECT, short press  -> "select"   cycle to the next preset
-#   BTN_START,  short press  -> "start"    start / pause the countdown
-#   BTN_START,  held 1s      -> "reset"    abandon and return to select
-
 from machine import Pin
 import time
 
