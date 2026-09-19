@@ -47,4 +47,4 @@ LONG_PRESS_MS = 1000  # Press duration that counts as a "long press"
 # Timer presets, in minutes
 # ---------------------------------------------------------------------------
 
-PRESETS_MIN = (1, 2, 3, 4)
+PRESETS_MIN = (15, 20, 25, 30)
