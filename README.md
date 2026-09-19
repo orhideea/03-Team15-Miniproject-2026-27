@@ -95,7 +95,11 @@ position. By convention the hand is assumed to be at the zero mark at power-on.
 
 ## Demonstration
 
-Photo of the assembled device: `docs/device-photo.jpg`
+Photo of the assembled device: 
+<p align="center">
+<img src="./docs/miniproject_pic.HEIC" width="50%">
+</p>
+
 
 Video of the timer in operation (under 10 seconds), stored in the team Google
 Drive folder under `/video`: [Watch the demo](https://drive.google.com/file/d/1BNmxIVX1rbS_jLAZKSKbm_UenGejjy32/view?usp=sharing)
