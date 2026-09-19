@@ -170,13 +170,13 @@ txt(COM_X + 16, 336, "RED", 10.5, family=MONO, c=RED)
 txt(COM_X + 16, 350, "common tap", 9.5, c=GREY)
 
 # ═════════════════════════════════════════════ D1 — tri-colour LED
-txt(520, 406, "D1   tri-colour LED, COMMON CATHODE", 12.5, "middle", weight="bold", halo=True)
-txt(520, 424, "one 4-lead package  ·  INL-5TB4URGB60", 10, "middle", c=GREY, halo=True)
+txt(398, 417, "D1   tri-colour LED, COMMON CATHODE", 11.5, "start", weight="bold")
+txt(398, 431, "one 4-lead package · INL-5TB4URGB60", 9.5, "start", c=GREY)
 CATH_X = 648
 rect(556, 440, 112, 148, sw=1.4, dash="7 6", c=GREY)      # package outline
 
-for rn, y, col, cname in [("R1", 460, RED, "RED"), ("R2", 510, BLUE, "BLUE"),
-                          ("R3", 560, GREEN, "GREEN")]:
+for rn, y, col, cname in [("R1", 460, GREEN, "GREEN"), ("R2", 510, RED, "RED"),
+                          ("R3", 560, BLUE, "BLUE")]:
     rx, rw, rh = 470, 56, 18
     line(ux + uw + 40, y, rx - rw / 2, y)
     rect(rx - rw / 2, y - rh / 2, rw, rh, sw=1.7)
@@ -232,7 +232,10 @@ NOTES = [
  "firmware/config.py STEP_SEQUENCE is written active-HIGH — verify on the bench (see VERIFICATION.md).",
  "5.  D1 is a single 4-lead common-cathode package, confirming COMMON_ANODE = False in firmware/leds.py. Green and blue VF = 2.8–3.6 V, so from 3.3 V "
  "through 220 Ω they draw only ~1–2 mA against red's ~6 mA; expect a large brightness imbalance.",
- "6.  Not supplied in the kit, recommended: 100 nF ceramic across VCC1–GND at U2, and 100 µF bulk on the +5 V rail near pin 8.",
+ "6.  LED channel order is NOT red/blue/green by GPIO number: GPIO7 drives GREEN, GPIO8 drives RED, GPIO9 drives BLUE. This is the bench-verified "
+ "assignment in firmware/config.py on lead/final (LED_GREEN = 7, LED_RED = 8, LED_BLUE = 9). Rev B and the wiring table in "
+ "hardware/electrical/README.md still show the original guess and are stale.",
+ "7.  Not supplied in the kit, recommended: 100 nF ceramic across VCC1–GND at U2, and 100 µF bulk on the +5 V rail near pin 8.",
 ]
 yy = 970
 for n in NOTES:
@@ -255,7 +258,7 @@ txt(tx + 14, ty + 57, "EC 463 Mini-Project · Team 15 (Group B)", 11.5)
 txt(tx + 14, ty + 89, "Drawn by: Deniz Oge", 11.5)
 txt(tx + 14, ty + 121, "Checked against firmware/config.py", 11.5)
 txt(tx + 280, ty + 57, "Sheet 1 of 1", 11.5)
-txt(tx + 280, ty + 89, "Rev B", 11.5)
+txt(tx + 280, ty + 89, "Rev C", 11.5)
 txt(tx + 280, ty + 121, "2026-09-19", 11.5)
 
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '

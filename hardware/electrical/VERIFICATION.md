@@ -1,4 +1,4 @@
-# Schematic verification — Rev B
+# Schematic verification — Rev C
 
 Every net in `schematic.pdf` cross-checked against its source. This exists so a reviewer
 can dispute a specific line rather than the drawing as a whole.
@@ -7,7 +7,7 @@ Sources used:
 
 | Tag | Source |
 |---|---|
-| **CFG** | `firmware/config.py` on `lead/docs-and-firmware` |
+| **CFG** | `firmware/config.py` on `lead/final` (the bench-tested branch) |
 | **WIRE** | `hardware/electrical/README.md`, "Wiring reference" |
 | **PINOUT** | Seeed XIAO ESP32-S3 official pinout (`Micro/1.jpg`, course parts pack) |
 | **L293D** | `L293D-datasheet.pdf` |
@@ -83,16 +83,30 @@ datasheet supports. Drawn per WIRE. Recorded in `NOTES.md` finding 1.
 
 ### LEDs
 
-| Net | Schematic | CFG | WIRE |
-|---|---|---|---|
-| `LED_R` | D8/GPIO7 → R1 220 Ω → D1 red anode | `LED_RED = 7` | GPIO7 → Red |
-| `LED_B` | D9/GPIO8 → R2 220 Ω → D1 blue anode | `LED_BLUE = 8` | GPIO8 → Blue |
-| `LED_G` | D10/GPIO9 → R3 220 Ω → D1 green anode | `LED_GREEN = 9` | GPIO9 → Green |
-| `GND` | D1 common cathode | `COMMON_ANODE = False` | LED cathodes → GND |
+**This is the one net group where the sources do not agree, and Rev B was wrong.**
 
-LED datasheet p.1 features: *"Common Cathode"*. Consistent with `COMMON_ANODE = False` and
-with `leds.py`'s comment *"increasing PWM = brighter LED"* — a higher duty on a
-common-cathode part is brighter.
+| Net | Schematic (Rev C) | CFG (`lead/final`) | WIRE |
+|---|---|---|---|
+| `LED_G` | D8/GPIO7 → R1 220 Ω → D1 green anode | `LED_GREEN = 7` | ✗ says Red |
+| `LED_R` | D9/GPIO8 → R2 220 Ω → D1 red anode | `LED_RED = 8` | ✗ says Blue |
+| `LED_B` | D10/GPIO9 → R3 220 Ω → D1 blue anode | `LED_BLUE = 9` | ✗ says Green |
+| `GND` | D1 common cathode | `COMMON_ANODE = False` | LED cathodes → GND ✓ |
+
+The firmware originally shipped with the intuitive guess — red 7, blue 8, green 9 — and
+that is still what `hardware/electrical/README.md` and `lead/docs-and-firmware` say.
+Commit `9d2e359` on `lead/final` changed it to green 7, red 8, blue 9 after hardware
+testing. That commit is titled *"Drive stepper in bursts to work around low-speed stall;
+tune dial quantization"* and says nothing about LEDs, which is why the change went
+unnoticed and why the README and Rev B of this schematic were left stale.
+
+Drawn per `lead/final`, because that is the assignment that was verified against the
+physical build. **Two things still need doing:** the wiring table in
+`hardware/electrical/README.md` has to be corrected to match, and if
+`lead/docs-and-firmware` is merged after `lead/final` it will silently revert the pin
+assignment and the LED colours will be wrong again.
+
+LED datasheet p.1 features: *"Common Cathode"*. Consistent with `COMMON_ANODE = False` —
+a higher duty on a common-cathode part is brighter, no inversion needed.
 
 ### Buttons
 
@@ -144,7 +158,17 @@ redraw it there or correct that line — it is a checkable claim.
 
 ---
 
-## 4. What Rev B changed from Rev A
+## 4. What Rev C changed from Rev B
+
+1. **LED channel order corrected** to match the bench-verified `config.py` on
+   `lead/final`: GPIO7 → green, GPIO8 → red, GPIO9 → blue. Rev B had the original
+   guess (GPIO7 → red) and was wrong against the built hardware. See section 2.
+2. Note 6 added to the drawing recording that assignment and naming the two documents
+   that are still stale.
+
+---
+
+## 5. What Rev B changed from Rev A
 
 1. Pin names now `silkscreen / GPIO` with pad numbers — the single biggest wiring risk.
 2. SW1/SW2 functions corrected against `config.py` (SELECT is GPIO5, START is GPIO6).
