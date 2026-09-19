@@ -3,6 +3,12 @@ import time
 
 import config
 
+# Hardware verified with Brian:
+# - Both switches are wired between their GPIO pin and GND.
+# - GPIO inputs use the internal pull-up resistors (Pin.PULL_UP).
+# - Released = HIGH (1), pressed = LOW (0).
+# - DEBOUNCE_MS = 50 was tested and verified with no double-triggering.
+
 _buttons = []
 
 
@@ -14,6 +20,7 @@ class _Button:
         self._short_event = short_event
         self._long_event = long_event
 
+        # Hardware confirmed: switches short the GPIO pin to GND when pressed.
         # 1 == released (idle, pulled high). 0 == pressed (shorted to GND).
         self._stable = 1
         self._last_raw = 1
@@ -29,6 +36,9 @@ class _Button:
         # The reading just changed -- restart the debounce window and wait for
         # it to settle. Mechanical switches bounce for a few milliseconds and
         # would otherwise generate a burst of phantom presses.
+        #
+        # DEBOUNCE_MS = 50 was verified on the physical switches with no
+        # double-triggering.
         if raw != self._last_raw:
             self._last_raw = raw
             self._last_change = now
@@ -88,6 +98,12 @@ def poll():
 
 # ---------------------------------------------------------------------------
 # Standalone test -- run this file on its own in Thonny to check the switches.
+#
+# Hardware verified with Brian:
+# - Switches connect GPIO to GND when pressed.
+# - Internal pull-ups are enabled.
+# - DEBOUNCE_MS = 50 was verified with no double-triggering.
+#
 # Press each button and watch the shell. Hold the start button for a second to
 # see the reset event.
 # ---------------------------------------------------------------------------
