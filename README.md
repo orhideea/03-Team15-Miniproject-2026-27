@@ -1,32 +1,20 @@
 # Team 15 Miniproject -- Meeting Timer
 
-<<<<<<< HEAD
-=======
 A self-contained meeting timer built on a Seeed Studio XIAO ESP32-S3 running
 MicroPython. The user selects one of four preset durations, starts the
 countdown, and a mechanical clock hand driven by a stepper motor sweeps toward
 zero while a tri-color LED indicates the current state.
 
->>>>>>> origin/ce/integration
 ---
 
 ## Team
 
 | Role | Named Members |
-<<<<<<< HEAD
-|---|---|
-| Electrical Engineering | Brian Quijada Pleitez |
-| Computer Engineering | Beatrice Vrinceanu-Popescu |
-| Computer Engineering | Bharath Srividhya |
-| Electrical Engineering | Deniz Oge |
-| Computer Engineering | Micky Kalich |
-=======
 |------|---------|
 | Mechanical Engineering | *(none on this team -- enclosure deliverable does not apply)* |
 | Electrical Engineering | *(none on this team -- electrical work covered by the CEs below)* |
 | Computer Engineering | Bharath Srividhya (Team Lead), Beatrice "Tris" Vrinceanu-Popescu, Brian Quijada Pleitez, Deniz Oge, Richard "Micky" Kalich |
 | Biomedical Engineering | |
->>>>>>> origin/ce/integration
 
 ---
 
@@ -36,14 +24,8 @@ zero while a tri-color LED indicates the current state.
 .
 ├── firmware/          # MicroPython source code for the XIAO ESP32-S3
 ├── hardware/
-<<<<<<< HEAD
-│   ├── electrical/    # Schematics, wiring diagrams, and BOM
-│
-└── docs/              # Project documentation 
-=======
 │   └── electrical/    # Schematic, wiring table, and BOM
 └── docs/              # State chart, project overview, photos
->>>>>>> origin/ce/integration
 ```
 
 `hardware/mechanical/` is intentionally absent: the team has no MEs, so the
@@ -55,16 +37,6 @@ enclosure and CAD deliverables do not apply to this build.
 
 | Component | Notes |
 |-----------|-------|
-<<<<<<< HEAD
-| XIAO ESP32-S3| Main Controller of the  system |
-| Multi-color LED | depending on the color, it shows a preset, ready status, an active status and a finished status |
-| Buttons | Two buttons that change the preset and start the timer  |
-| L293D driver | A power driver able to translate the esp32 GPIO signals into a current for the coils of stepper motor|
-| 28BYJ-48 Stepper | Drives the pointer to show the amount of allotted time left |
----
-
-## Team Responsibilities 
-=======
 | Seeed Studio XIAO ESP32-S3 | Main microcontroller. MicroPython v1.28.0. Powered and programmed over USB-C. Supplies both 5V (from USB) and 3.3V (from its regulator). |
 | 28BYJ-48 stepper motor | 5-wire, 4-phase unipolar. Drives the clock hand. Run in wave drive, one coil energized at a time. |
 | L293D H-bridge driver | Level-shifts the 3.3V GPIO signals to the 5V the motor needs, and isolates motor current from the micro. The "D" suffix means it has internal flyback diodes. |
@@ -134,7 +106,6 @@ Drive folder under `/video`: [Watch the demo](https://drive.google.com/file/d/1B
 
 Any discipline can do any role here -- you make the assignments. This team is
 entirely CEs, so the electrical work was distributed among the group.
->>>>>>> origin/ce/integration
 
 ### Electrical oriented
 - Produce the breadboard schematic -- **Brian**
