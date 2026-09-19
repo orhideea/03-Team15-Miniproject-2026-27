@@ -1,6 +1,3 @@
-# config.py: shared hardware configuration for the Team 15 meeting timer.
-# Every module imports from here. Do not hardcode pin numbers anywhere else.
-
 # --- Stepper motor (28BYJ-48 via L293D H-bridge) ---
 # These drive the L293D inputs 1A, 2A, 3A, 4A -> motor coils 1-4.
 STEP_PINS = (1, 2, 3, 4)  # GPIO1..GPIO4
