@@ -1,34 +1,26 @@
 from machine import Pin, PWM
 import time
-
 import config
 
-# ---------------------------------------------------------------------------
-# Hardware note: set this to True if the tri-color LED is COMMON ANODE.
-# On a common-anode part the shared leg goes to 3V3 and a channel lights up
-# when its pin is pulled LOW, so the duty cycle has to be inverted.
-# Check Tri-color-LED-datasheet.pdf and confirm on the bench before trusting it.
-# ---------------------------------------------------------------------------
+
+# increasing PWM = brighter LED
 COMMON_ANODE = False
 
-# State -> (color, pulsing?) mapping.
-#   "select"  : idle, user is choosing a preset   -> blue, pulsing
-#   "running" : timer counting down               -> green, steady
-#   "paused"  : timer held                        -> green, pulsing
-#   "expired" : time is up                        -> red, pulsing
+
+# setting up states with LEDs
 _STATE_TABLE = {
-    "select": ("blue", True),
-    "running": ("green", False),
-    "paused": ("green", True),
-    "expired": ("red", True),
+    "select": ("blue", True), #pulse
+    "running": ("green", False), # no pulse
+    "paused": ("green", True), # pulse
+    "expired": ("red", True), # pulse
 }
 
-_channels = {}  # color name -> PWM object
-_state = "select"  # current state name
+_channels = {}  #color name is PWM object
+_state = "select"  #current state name
 
 
+#create PWM outputs
 def init():
-    """Create the PWM channels. Safe to call more than once."""
     global _channels
     _channels = {
         "red": PWM(Pin(config.LED_RED), freq=config.PWM_FREQ, duty_u16=0),
@@ -37,25 +29,14 @@ def init():
     }
     off()
 
-
+#state selection function
 def set_state(name):
-    """Select which LED pattern to display.
-
-    name must be one of: "select", "running", "paused", "expired".
-    Unknown names are ignored so a typo in main.py cannot crash the timer.
-    """
     global _state
     if name in _STATE_TABLE:
         _state = name
 
-
+#called repeatedly from main loop to read millisecond clock 
 def update():
-    """Advance the pulse animation. Call this every pass of the main loop.
-
-    This is deliberately non-blocking -- it reads the millisecond clock and
-    computes the brightness for *right now*, rather than sleeping. Using
-    time.sleep() here would stall the stepper and the buttons.
-    """
     if not _channels:
         return
 
@@ -65,24 +46,14 @@ def update():
     for name, pwm in _channels.items():
         pwm.duty_u16(_duty(level) if name == color else _duty(0.0))
 
-
+#turns all three channcels off
 def off():
-    """Turn all three channels fully off."""
     for pwm in _channels.values():
         pwm.duty_u16(_duty(0.0))
-
-
-# ---------------------------------------------------------------------------
-# Internal helpers
-# ---------------------------------------------------------------------------
-
-
+        
+#pulsing from dark to bright to dark 
+#cycle of 1 second 
 def _pulse_level():
-    """Return brightness 0.0 -> 1.0 -> 0.0 over one PULSE_PERIOD_MS window.
-
-    A triangle wave is used rather than a sine so there is no floating point
-    math library dependency; visually the difference is negligible.
-    """
     period = config.PULSE_PERIOD_MS
     half = period // 2
     phase = time.ticks_ms() % period
@@ -99,20 +70,3 @@ def _duty(level):
         level = 1.0
     value = int(level * 65535)
     return (65535 - value) if COMMON_ANODE else value
-
-
-# ---------------------------------------------------------------------------
-# Standalone test -- run this file on its own in Thonny to check the wiring.
-# It walks through every state for three seconds each.
-# ---------------------------------------------------------------------------
-if __name__ == "__main__":
-    init()
-    for state in ("select", "running", "paused", "expired"):
-        print("state:", state)
-        set_state(state)
-        end = time.ticks_add(time.ticks_ms(), 3000)
-        while time.ticks_diff(end, time.ticks_ms()) > 0:
-            update()
-            time.sleep_ms(10)
-    off()
-    print("LED test complete")
