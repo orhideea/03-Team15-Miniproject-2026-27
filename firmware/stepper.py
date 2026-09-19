@@ -33,7 +33,7 @@ import config
 # The 28BYJ-48 needs a short settling time between coil changes. Below about
 # 2 ms the rotor cannot keep up and the motor stalls or skips steps. 3 ms is a
 # safe default; lower it only if the hand is visibly too slow.
-STEP_INTERVAL_MS = 3
+STEP_INTERVAL_MS = 5
 
 _pins = []
 _position = 0  # current position, in steps above the zero mark
