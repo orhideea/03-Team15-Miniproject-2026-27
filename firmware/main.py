@@ -160,8 +160,9 @@ def run():
         "min",
     )
 
-    while True:
-        # 1. Read input.
+    last_move = time.ticks_ms()
+    last_fraction = None
+    while True:        # 1. Read input.
         timer.handle(buttons.poll())
 
         # 2. Advance the clock.
@@ -169,15 +170,23 @@ def run():
 
         # 3. Drive the outputs. Both calls are non-blocking, so the loop keeps
         #    spinning fast enough that button presses are never missed.
-        stepper.move_to_fraction(timer._dial_fraction())
-        stepper.update()
+        wanted = round(timer._dial_fraction() * 20) / 20
+        if wanted != last_fraction:
+            last_fraction = wanted
+            stepper.move_to_fraction(wanted)
+            while not stepper.at_target():
+                stepper.update()
         leds.update()
 
         # 4. De-energize the motor once the hand has settled. The gearbox holds
         #    position on its own, so there is no reason to keep burning current
         #    in the coils -- this is the low-power part of the design.
-        if stepper.at_target():
-            stepper.release()
+        
+        # if stepper.at_target():
+        #   if time.ticks_diff(time.ticks_ms(), last_move) > 2000:
+        #       stepper.release()
+        #else:
+        #   last_move = time.ticks_ms()
 
         # A short yield keeps CPU use sane without hurting responsiveness.
         time.sleep_ms(2)

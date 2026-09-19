@@ -17,9 +17,9 @@ STEPS_PER_REV = 2048  # 28BYJ-48 full-step, after 63.68:1 gearbox
 SWEEP_STEPS = 1024  # hand travels 180 deg from full to zero
 
 # --- LEDs (each through a 220 ohm resistor) ---
-LED_RED = 7
-LED_BLUE = 8
-LED_GREEN = 9
+LED_RED = 8
+LED_BLUE = 9
+LED_GREEN = 7
 PWM_FREQ = 1000  # Hz, PWM carrier
 PULSE_PERIOD_MS = 1000  # one full brightness breath per second
 
@@ -30,4 +30,4 @@ DEBOUNCE_MS = 50
 LONG_PRESS_MS = 1000
 
 # --- Timer presets, in minutes ---
-PRESETS_MIN = (15, 20, 25, 30)
+PRESETS_MIN = (1, 2, 3, 4)
