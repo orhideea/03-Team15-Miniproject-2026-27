@@ -1,20 +1,15 @@
 # 03-Miniproject-2026-27
 
-This is a template repo for a multi-disciplinary mini-project for a
-small team of EEs, CEs, MEs, and BMEs. The mini-project is described in the
-course assignment. You should tailor this repo based on your team
-composition, roles, and the tasks at hand.
-
 ---
 
 ## Team
 
 | Role | Named Members |
-|------|---------|
-| Mechanical Engineering | |
-| Electrical Engineering | |
-| Computer Engineering | |
-| Biomedical Engineering | |
+| Electrical Engineering | Brian Quijada Pleitez |
+| Computer Engineering | Beatrice Vrinceanu-Popescu |
+| Computer Engineering | Bharath Srividhya |
+| Electrical Engineering | Deniz Oge |
+| Computer Engineering | Micky Kalich |
 
 ---
 
@@ -25,7 +20,7 @@ composition, roles, and the tasks at hand.
 ├── firmware/          # Micro source code
 ├── hardware/
 │   ├── electrical/    # Schematics, wiring diagrams, and BOM
-│   └── mechanical/    # Enclosure CAD files and fabrication notes
+│
 └── docs/              # Project documentation 
 ```
 
@@ -41,12 +36,6 @@ composition, roles, and the tasks at hand.
 ---
 
 ## Team Responsibilities 
-Any discipline can do any role here -- you make the assigments. 
-
-### Mechanical oriented
-- Design the enclosure 
-- Fabricate the enclosure (3-D print or laser-cut)
-- Document the assembly process 
 
 ### Electrical oriented
 - Produce the breadboard schematic
