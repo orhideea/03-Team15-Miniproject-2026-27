@@ -1,30 +1,38 @@
-# --- Stepper motor (28BYJ-48 via L293D H-bridge) ---
-# These drive the L293D inputs 1A, 2A, 3A, 4A -> motor coils 1-4.
-STEP_PINS = (1, 2, 3, 4)  # GPIO1..GPIO4
+#GPIO 1-4 control the motor
+STEP_PINS = (1, 2, 3, 4)  
 
-# Wave-drive sequence: one coil energized at a time.
+# motor rotation sequence set up
+# coil order: orange -> pink -> yellow -> blue 
 STEP_SEQUENCE = (
-    (1, 0, 0, 0),  # coil 1 - orange
-    (0, 1, 0, 0),  # coil 2 - pink
-    (0, 0, 1, 0),  # coil 3 - yellow
-    (0, 0, 0, 1),  # coil 4 - blue
+    (1, 0, 0, 0),  
+    (0, 1, 0, 0),  
+    (0, 0, 1, 0),  
+    (0, 0, 0, 1),  
 )
 
-STEPS_PER_REV = 2048  # 28BYJ-48 full-step, after 63.68:1 gearbox
-SWEEP_STEPS = 1024  # hand travels 180 deg from full to zero
+# one full revolution
+STEPS_PER_REV = 2048 
 
-# --- LEDs (each through a 220 ohm resistor) ---
+# 180º step set-up
+SWEEP_STEPS = 1024  
+
+
+# GPIO LED pin set up
 LED_RED = 7
 LED_BLUE = 8
 LED_GREEN = 9
-PWM_FREQ = 1000  # Hz, PWM carrier
-PULSE_PERIOD_MS = 1000  # one full brightness breath per second
+PWM_FREQ = 1000  
 
-# --- Buttons (tactile switches) ---
-BTN_SELECT = 5  # cycles the preset
-BTN_START = 6  # short press: start/pause, long press: reset
+# controls brightness
+PULSE_PERIOD_MS = 1000 
+
+
+BTN_SELECT = 5  #timer presets
+BTN_START = 6  #start/stop timer control
+
+#debounce time setup 
 DEBOUNCE_MS = 50
 LONG_PRESS_MS = 1000
 
-# --- Timer presets, in minutes ---
+
 PRESETS_MIN = (15, 20, 25, 30)
