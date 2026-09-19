@@ -5,6 +5,7 @@
 ## Team
 
 | Role | Named Members |
+|---|---|
 | Electrical Engineering | Brian Quijada Pleitez |
 | Computer Engineering | Beatrice Vrinceanu-Popescu |
 | Computer Engineering | Bharath Srividhya |
