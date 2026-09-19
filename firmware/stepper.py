@@ -1,30 +1,3 @@
-# stepper.py -- 28BYJ-48 stepper control for the Team 15 meeting timer.
-#
-# Owner: Tris (Beatrice)
-#
-# Drives the 28BYJ-48 unipolar stepper through an L293D H-bridge using wave
-# drive (exactly one coil energized at a time). The motor turns the clock hand
-# that shows how much meeting time is left.
-#
-# The L293D is needed because the motor wants 5V while the XIAO's GPIO only
-# swings to 3.3V. The micro drives the L293D inputs; the L293D switches the 5V
-# rail to the coils.
-#
-# Public interface (agreed with the team -- do not change without telling everyone):
-#   init()                 -- configure the four coil pins. Call once at startup.
-#   move_to_fraction(f)    -- request a hand position. f = 1.0 is full scale,
-#                             f = 0.0 is the zero mark. Returns immediately.
-#   update()               -- call repeatedly from the main loop to advance the
-#                             motor toward the requested position. Non-blocking.
-#   at_target()            -- True when the hand has finished moving.
-#   release()              -- de-energize all coils (saves power, stops the
-#                             motor buzzing and heating when it is idle).
-#
-# IMPORTANT -- there is no limit switch on this build, so the firmware cannot
-# sense where the hand physically is. Convention: at power-on the hand is
-# assumed to be at the zero mark. Position it by hand before resetting the
-# board, or the dial will read off by a constant offset.
-
 from machine import Pin
 import time
 
