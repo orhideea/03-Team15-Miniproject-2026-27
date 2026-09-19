@@ -1,47 +1,29 @@
 # main.py -- Team 15 meeting timer, top-level state machine.
 #
-# Owner: Beatrice (Tris)
+# Owner: Bharath Srividhya
 #
-# A self-contained meeting timer. The user picks one of four presets, starts
-# the countdown, and a mechanical hand driven by a stepper motor sweeps toward
-# zero while an LED shows the current state.
+# The user picks one of four presets, starts the countdown, and a mechanical
+# hand driven by a stepper motor shows the time remaining while a tri-color
+# LED indicates the current state.
 #
-# On the ESP32, a file named main.py is run automatically at power-on, so the
+# On the ESP32 a file named main.py runs automatically at power-on, so the
 # finished timer works standalone with no laptop attached.
 #
-# ---------------------------------------------------------------------------
-# HOW TO USE THE TIMER
-# ---------------------------------------------------------------------------
-#   Button 1 (SELECT, GPIO5)
-#       press          cycle through the presets: 15 -> 20 -> 25 -> 30 -> 15
+# Controls
+#   Button 1 (SELECT)  press          cycle presets: 15 -> 20 -> 25 -> 30 min
+#   Button 2 (START)   press          start, or pause/resume while running
+#                      hold 1 second  reset back to preset selection
 #
-#   Button 2 (START, GPIO6)
-#       press          start the countdown, or pause/resume it while running
-#       hold 1 second  reset back to preset selection
+# LED
+#   blue pulsing    choosing a preset
+#   green steady    counting down
+#   green pulsing   paused
+#   red pulsing     time is up
 #
-#   LED meanings
-#       blue, pulsing    choosing a preset
-#       green, steady    counting down
-#       green, pulsing   paused
-#       red, pulsing     time is up
-#
-# ---------------------------------------------------------------------------
-# THE DIAL
-# ---------------------------------------------------------------------------
-# The hand reads absolute minutes, not percent-of-preset. Full scale is the
-# largest preset (30 min), so a 15 minute timer starts at half deflection and
-# sweeps down from there. This keeps the dial honest: the same hand angle
-# always means the same number of minutes, whichever preset is chosen.
-#
-# ---------------------------------------------------------------------------
-# STATE MACHINE
-# ---------------------------------------------------------------------------
-#   SELECT  --start-->        RUNNING
-#   RUNNING --start-->        PAUSED
-#   RUNNING --time reaches 0--> EXPIRED
-#   PAUSED  --start-->        RUNNING
-#   EXPIRED --start-->        SELECT
-#   any     --reset (hold)--> SELECT
+# The dial reads absolute minutes rather than percent of the chosen preset.
+# Full scale is the largest preset, so a 15 minute timer starts at half
+# deflection. The same hand angle therefore always means the same number of
+# minutes remaining, whichever preset is active.
 
 import time
 
@@ -52,6 +34,10 @@ import stepper
 
 # Full scale on the dial, in minutes.
 SCALE_MAX_MIN = max(config.PRESETS_MIN)
+
+# Number of discrete positions the dial is quantized into. See the note in the
+# main loop for why the hand moves in steps rather than continuously.
+DIAL_DIVISIONS = 20
 
 # State names. Plain strings keep the REPL output readable while debugging.
 SELECT = "select"
@@ -69,14 +55,12 @@ class Timer:
         self.remaining_ms = self._preset_ms()
         self.last_tick = time.ticks_ms()
 
-    # -- helpers ----------------------------------------------------------
-
     def _preset_ms(self):
         """Duration of the currently selected preset, in milliseconds."""
         return config.PRESETS_MIN[self.preset_index] * 60 * 1000
 
-    def _dial_fraction(self):
-        """Where the hand should point right now, 0.0 - 1.0."""
+    def dial_fraction(self):
+        """Where the hand should point right now, 0.0 to 1.0."""
         minutes_left = self.remaining_ms / 60000.0
         return minutes_left / SCALE_MAX_MIN
 
@@ -85,8 +69,6 @@ class Timer:
         self.state = state
         leds.set_state(state)
         print("state ->", state)
-
-    # -- event handling ---------------------------------------------------
 
     def handle(self, event):
         """Apply a button event to the state machine."""
@@ -102,7 +84,6 @@ class Timer:
 
         if self.state == SELECT:
             if event == "select":
-                # Cycle to the next preset and reload the countdown.
                 self.preset_index = (self.preset_index + 1) % len(config.PRESETS_MIN)
                 self.remaining_ms = self._preset_ms()
                 print("preset ->", config.PRESETS_MIN[self.preset_index], "min")
@@ -125,8 +106,6 @@ class Timer:
             if event == "start":
                 self.remaining_ms = self._preset_ms()
                 self._enter(SELECT)
-
-    # -- time keeping -----------------------------------------------------
 
     def tick(self):
         """Subtract elapsed real time while running."""
@@ -160,33 +139,29 @@ def run():
         "min",
     )
 
-    last_move = time.ticks_ms()
     last_fraction = None
-    while True:        # 1. Read input.
-        timer.handle(buttons.poll())
 
-        # 2. Advance the clock.
+    while True:
+        timer.handle(buttons.poll())
         timer.tick()
 
-        # 3. Drive the outputs. Both calls are non-blocking, so the loop keeps
-        #    spinning fast enough that button presses are never missed.
-        wanted = round(timer._dial_fraction() * 20) / 20
+        # The 28BYJ-48 will not step reliably at the slow rate a countdown
+        # demands: static friction stalls the rotor between single pulses.
+        # Measured on the bench -- 400 steps at 3 ms apart turns the shaft,
+        # while 200 steps at 125 ms apart produces no rotation at all.
+        #
+        # So the dial is quantized into DIAL_DIVISIONS positions and each
+        # change is driven to completion in one fast burst, at the step rate
+        # the motor demonstrably handles. The hand ticks rather than sweeps,
+        # which is also easier to read at a glance.
+        wanted = round(timer.dial_fraction() * DIAL_DIVISIONS) / DIAL_DIVISIONS
         if wanted != last_fraction:
             last_fraction = wanted
             stepper.move_to_fraction(wanted)
             while not stepper.at_target():
                 stepper.update()
-        leds.update()
 
-        # 4. De-energize the motor once the hand has settled. The gearbox holds
-        #    position on its own, so there is no reason to keep burning current
-        #    in the coils -- this is the low-power part of the design.
-        
-        # if stepper.at_target():
-        #   if time.ticks_diff(time.ticks_ms(), last_move) > 2000:
-        #       stepper.release()
-        #else:
-        #   last_move = time.ticks_ms()
+        leds.update()
 
         # A short yield keeps CPU use sane without hurting responsiveness.
         time.sleep_ms(2)
