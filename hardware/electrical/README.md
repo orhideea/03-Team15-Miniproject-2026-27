@@ -44,15 +44,30 @@ The enable pins only need a logic high, and 3.3V is comfortably above the
 L293D's input threshold, so they are tied to the XIAO's 3V3 rail rather than
 5V.
 
+Both VCC1 and VCC2 must be at 5V. During bring-up the breadboard's positive
+rail was initially fed from the 3V3 pin rather than the 5V pin, which left the
+chip's logic supply missing and the motor completely silent on all four coils.
+Worth checking first if the motor does not respond.
+
 ### LEDs and switches
 
 | XIAO pin | Component | Notes |
 |---|---|---|
-| GPIO7 | Red LED | Through a 220 ohm series resistor |
-| GPIO8 | Blue LED | Through a 220 ohm series resistor |
-| GPIO9 | Green LED | Through a 220 ohm series resistor |
+| GPIO7 | Green LED | Through a 220 ohm series resistor |
+| GPIO8 | Red LED | Through a 220 ohm series resistor |
+| GPIO9 | Blue LED | Through a 220 ohm series resistor |
 | GPIO5 | Tactile switch 1 (SELECT) | To GND, internal pull-up enabled in firmware |
 | GPIO6 | Tactile switch 2 (START) | To GND, internal pull-up enabled in firmware |
+
+The LED pin order is not the obvious one. It was established empirically by
+driving each pin individually and observing which colour lit, after the initial
+assumed mapping did not match the board. The firmware was corrected to match
+the hardware.
+
+The tri-color LED is common cathode: the shared leg goes to the ground rail and
+a channel lights when its pin is driven high. Connecting the shared leg to the
+positive rail instead leaves only about 1.7V across each channel, which makes
+red glow faintly and prevents blue and green from lighting at all.
 
 The switches use the ESP32's internal pull-up resistors, so a pressed button
 reads logic 0 and no external resistors are required.
