@@ -98,7 +98,7 @@ position. By convention the hand is assumed to be at the zero mark at power-on.
 Photo of the assembled device: `docs/device-photo.jpg`
 
 Video of the timer in operation (under 10 seconds), stored in the team Google
-Drive folder under `/video`: *(link to be added)*
+Drive folder under `/video`: [Watch the demo](https://drive.google.com/file/d/1BNmxIVX1rbS_jLAZKSKbm_UenGejjy32/view?usp=sharing)
 
 ---
 
